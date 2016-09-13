@@ -40,6 +40,23 @@ template triangle*(self: var RenderBuffer[RenderColor],
   vs.sort do (x, y: Vert) -> int:
     result = cmp(x.y, y.y)                  
 
-  self.line(vs[0].x, vs[0].y, vs[1].x, vs[1].y, rgb(0, 255, 0))
-  self.line(vs[1].x, vs[1].y, vs[2].x, vs[2].y, rgb(0, 255, 0))
-  self.line(vs[2].x, vs[2].y, vs[0].x, vs[0].y, rgb(255, 0, 0))
+  let totalHeight = vs[2].y - vs[0].y
+
+  for y in vs[0].y..vs[1].y:
+    let
+      segmentHeight = vs[1].y - vs[0].y + 1
+      alpha = float(y - vs[0].y) / totalHeight
+      beta = float(y - vs[0].y) / segmentHeight
+
+  let
+    ax = vs[0].x + (vs[2].x - vs[0].x) * alpha
+    ay = vs[0].y + (vs[2].y - vs[0].y) * alpha
+    bx = vs[0].x + (vs[1].x - vs[0].x) * beta
+    by = vs[0].y + (vs[1].y - vs[0].y) * beta
+
+  self.set(ax, y, rgb(255, 0, 0))
+  self.set(bx, y, rgb(0, 255, 0))
+
+  #self.line(vs[0].x, vs[0].y, vs[1].x, vs[1].y, rgb(0, 255, 0))
+  #self.line(vs[1].x, vs[1].y, vs[2].x, vs[2].y, rgb(0, 255, 0))
+  #self.line(vs[2].x, vs[2].y, vs[0].x, vs[0].y, rgb(255, 0, 0))
