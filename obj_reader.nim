@@ -1,9 +1,7 @@
 import tables, strutils, parseutils, sequtils
+import types
 
 type
-  Vert* = object
-    x*, y*, z*: float
-
   IndexGroup = tuple
     v: int
     t: int
@@ -17,8 +15,6 @@ type
 
   Model* = object
     meshes: Table[string, Mesh]
-
-  Triangle = array[0..2, Vert]
 
 proc readFloat(input: string): float =
   if parseFloat(input, result) == 0:

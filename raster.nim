@@ -1,4 +1,4 @@
-import render_buffer, color
+import render_buffer, color, types, algorithm
 
 template line*[P](self: var RenderBuffer[P],
                   x0: int, y0: int,
@@ -33,3 +33,13 @@ template line*[P](self: var RenderBuffer[P],
                   x1: float, y1: float,
                   col: P) =
   self.line(int(x0), int(y0), int(x1), int(y1), col)
+
+template triangle*(self: var RenderBuffer[RenderColor],
+                   vs: var array[3, Vert],
+                   col: RenderColor = rgb(255, 255, 255)) =
+  vs.sort do (x, y: Vert) -> int:
+    result = cmp(x.y, y.y)                  
+
+  self.line(vs[0].x, vs[0].y, vs[1].x, vs[1].y, rgb(0, 255, 0))
+  self.line(vs[1].x, vs[1].y, vs[2].x, vs[2].y, rgb(0, 255, 0))
+  self.line(vs[2].x, vs[2].y, vs[0].x, vs[0].y, rgb(255, 0, 0))
