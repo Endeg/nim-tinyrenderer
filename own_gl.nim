@@ -9,7 +9,7 @@ const
 var
   buf = render_buffer.init[RenderColor]()
 
-  model = loadObj("models/fleur.obj")
+  model = loadObj("models/Tails/Tails.obj")
 
 when isMainModule:
 
