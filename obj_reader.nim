@@ -1,10 +1,15 @@
-import tables, strutils, parseutils
+import tables, strutils, parseutils, sequtils
 
 type
   Vert* = object
     x, y, z: float
 
-  Face* = array[0..2, int]
+  IndexGroup = tuple
+    v: int
+    t: int
+    n: int
+
+  Face* = array[0..2, IndexGroup]
 
   Mesh* = object
     verts: seq[Vert]
@@ -20,6 +25,22 @@ proc readFloat(input: string): float =
 proc readInt(input: string): int =
   if parseInt(input, result) == 0:
     raise newException(IOError, "Unable to parse '" & input & "' as int")
+
+proc extractIndexes(input: string): IndexGroup =
+  let
+    ind = input.split("/")
+    count = ind.len
+  
+  result.v = -1
+  result.t = -1
+  result.n = -1
+
+  if count >= 1:
+    result.v = readInt(ind[0]) - 1
+  if count >= 2:
+    result.t = readInt(ind[1]) - 1
+  if count >= 3:
+    result.n = readInt(ind[2]) - 1
 
 proc smartSplit(input: string): seq[string] =
   result = @[]
@@ -58,9 +79,16 @@ proc loadObj*(fileName: string): Model =
           result.meshes[currentMeshName].verts.add(v)
         
         elif tokens.len >= 4 and command == "f":
-          let faceElements = tokens[1..tokens.len - 1]
+          let faceElements = map(tokens[1..tokens.len - 1], extractIndexes)
           if faceElements.len > 3:
             raise newException(IOError, "Non-triangle faces not supported")
+
+          var f: Face
+          f[0] = faceElements[0]
+          f[1] = faceElements[1]
+          f[2] = faceElements[2]
+
+          result.meshes[currentMeshName].faces.add(f)
 
         else:
           discard
