@@ -3,13 +3,19 @@ import obj_reader
 import render_buffer, color, raster
 
 const
-  WINDOW_WIDTH = 256
-  WINDOW_HEIGHT = 256
+  WINDOW_WIDTH = 1024
+  WINDOW_HEIGHT = 768
 
 var
-  buf = render_buffer.init[RenderColor]()
+  buf = render_buffer.init[RenderColor](WINDOW_WIDTH, WINDOW_HEIGHT)
 
   model = loadObj("models/Tails/Tails.obj")
+
+template drawLineForWindow(self: RenderBuffer, v0: Vert, v1: Vert, offset: float = 1.0) =
+  let offsetDouble = offset * 2.0
+  buf.line((v0.x + offset) * WINDOW_WIDTH / offsetDouble, (v0.y + offset) * WINDOW_HEIGHT / offsetDouble,
+           (v1.x + offset) * WINDOW_WIDTH / offsetDouble, (v1.y + offset) * WINDOW_HEIGHT / offsetDouble,
+           rgb(200, 200, 200))
 
 when isMainModule:
 
@@ -24,9 +30,9 @@ when isMainModule:
 
   #---- draw from render buffer starts here
   for tri in model.triangles():
-    buf.line(tri[0].x, tri[0].y, tri[1].x, tri[1].y, rgb(200, 200, 200))
-    buf.line(tri[1].x, tri[1].y, tri[2].x, tri[2].y, rgb(200, 200, 200))
-    buf.line(tri[2].x, tri[2].y, tri[0].x, tri[0].y, rgb(200, 200, 200))
+    buf.drawLineForWindow(tri[0], tri[1], 8.0)
+    buf.drawLineForWindow(tri[1], tri[2], 8.0)
+    buf.drawLineForWindow(tri[2], tri[0], 8.0)
 
   var pointOperations = 0
 
