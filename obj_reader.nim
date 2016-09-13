@@ -2,7 +2,7 @@ import tables, strutils, parseutils, sequtils
 
 type
   Vert* = object
-    x, y, z: float
+    x*, y*, z*: float
 
   IndexGroup = tuple
     v: int
@@ -18,6 +18,8 @@ type
   Model* = object
     meshes: Table[string, Mesh]
 
+  Triangle = array[0..2, Vert]
+
 proc readFloat(input: string): float =
   if parseFloat(input, result) == 0:
     raise newException(IOError, "Unable to parse '" & input & "' as float")
@@ -30,7 +32,7 @@ proc extractIndexes(input: string): IndexGroup =
   let
     ind = input.split("/")
     count = ind.len
-  
+
   result.v = -1
   result.t = -1
   result.n = -1
@@ -48,6 +50,15 @@ proc smartSplit(input: string): seq[string] =
     let stripped = elem.strip()
     if stripped != "":
       result.add(stripped)
+
+iterator triangles*(self: Model): Triangle =
+  for m in self.meshes.values():
+    for f in m.faces:
+      var tri: Triangle
+      tri[0] = m.verts[f[0].v]
+      tri[1] = m.verts[f[1].v]
+      tri[2] = m.verts[f[2].v]
+      yield tri
 
 proc loadObj*(fileName: string): Model =
   result.meshes = initTable[string, Mesh]()

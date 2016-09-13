@@ -1,9 +1,9 @@
 import render_buffer, color
 
 template line*[P](self: var RenderBuffer[P],
-               x0: int, y0: int,
-               x1: int, y1: int,
-               col: P) =
+                  x0: int, y0: int,
+                  x1: int, y1: int,
+                  col: P) =
   var
     steep = false
     xx0 = x0
@@ -28,3 +28,8 @@ template line*[P](self: var RenderBuffer[P],
     else:
       self.set(x, y, col)
      
+template line*[P](self: var RenderBuffer[P],
+                  x0: float, y0: float,
+                  x1: float, y1: float,
+                  col: P) =
+  self.line(int(x0), int(y0), int(x1), int(y1), col)

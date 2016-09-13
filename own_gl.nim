@@ -23,15 +23,10 @@ when isMainModule:
   render.clear
 
   #---- draw from render buffer starts here
-
-  buf.line(48, 77, 64, 56, rgb(200, 200, 200))
-
-  buf.set(48, 77, rgb(255, 128, 128))
-  buf.set(64, 56, rgb(255, 128, 255))
-
-  buf.line(13, 20, 80, 40, rgb(255, 255, 255)) 
-  buf.line(20, 13, 40, 80, rgb(255, 0, 0)) 
-  buf.line(80, 40, 13, 20, rgb(255, 0, 0))
+  for tri in model.triangles():
+    buf.line(tri[0].x, tri[0].y, tri[1].x, tri[1].y, rgb(200, 200, 200))
+    buf.line(tri[1].x, tri[1].y, tri[2].x, tri[2].y, rgb(200, 200, 200))
+    buf.line(tri[2].x, tri[2].y, tri[0].x, tri[0].y, rgb(200, 200, 200))
 
   for x, y, col in buf.entries():
     render.setDrawColor col.red, col.green, col.blue, col.alpha
