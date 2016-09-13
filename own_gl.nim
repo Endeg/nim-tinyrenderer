@@ -1,4 +1,5 @@
 import sdl2, sdl2/image
+import obj_reader
 import render_buffer, color, raster
 
 const
@@ -7,6 +8,8 @@ const
 
 var
   buf = render_buffer.init[RenderColor]()
+
+  model = loadObj("models/fighterCharUV_PolygonDan.obj")
 
 when isMainModule:
 

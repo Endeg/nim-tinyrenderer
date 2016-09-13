@@ -5,3 +5,6 @@ nimsuggest.log
 # Binaries
 *.dll
 *.exe
+
+# Models
+models/
