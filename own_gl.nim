@@ -1,6 +1,10 @@
 import sdl2, sdl2/image
 import render_buffer, color, raster
 
+const
+  WINDOW_WIDTH = 256
+  WINDOW_HEIGHT = 256
+
 var
   buf = render_buffer.init[RenderColor]()
 
@@ -8,7 +12,8 @@ when isMainModule:
 
   discard sdl2.init(INIT_VIDEO)
   let
-    window = createWindow("Own GL", 100, 100, 256, 256, SDL_WINDOW_SHOWN)
+    window = createWindow("Own GL", 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
+                          SDL_WINDOW_SHOWN)
     render = createRenderer(window, -1, Renderer_Software)
 
   render.setDrawColor 0, 0, 0, 255
@@ -21,9 +26,13 @@ when isMainModule:
   buf.set(48, 77, rgb(255, 128, 128))
   buf.set(64, 56, rgb(255, 128, 255))
 
+  buf.line(13, 20, 80, 40, rgb(255, 255, 255)) 
+  buf.line(20, 13, 40, 80, rgb(255, 0, 0)) 
+  buf.line(80, 40, 13, 20, rgb(255, 0, 0))
+
   for x, y, col in buf.entries():
     render.setDrawColor col.red, col.green, col.blue, col.alpha
-    render.drawPoint cint(x), cint(y)
+    render.drawPoint cint(x), WINDOW_HEIGHT - cint(y)
 
   #---- end of drawing to render buffer
 
