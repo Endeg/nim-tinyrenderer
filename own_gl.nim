@@ -28,11 +28,15 @@ when isMainModule:
     buf.line(tri[1].x, tri[1].y, tri[2].x, tri[2].y, rgb(200, 200, 200))
     buf.line(tri[2].x, tri[2].y, tri[0].x, tri[0].y, rgb(200, 200, 200))
 
+  var pointOperations = 0
+
   for x, y, col in buf.entries():
     render.setDrawColor col.red, col.green, col.blue, col.alpha
     render.drawPoint cint(x), WINDOW_HEIGHT - cint(y)
-
+    inc(pointOperations)
   #---- end of drawing to render buffer
+
+  echo "Point operations: " & $pointOperations
 
   var
     done = false
