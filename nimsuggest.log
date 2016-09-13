@@ -32,3 +32,8 @@ illformed AST:
 illformed AST: 
 illformed AST: 
 illformed AST: 
+illformed AST: proc name(event: Event): WindowEventPtr =
+  if not contains({WindowEvent}, event.kind):
+    failedAssertImpl("contains(valid, event.kind) ")
+  return result = cast[WindowEventPtr](addr(event))
+

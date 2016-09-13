@@ -1,5 +1,6 @@
 # Nim
 nimcache/
+nimsuggest.log
 
 # Binaries
 *.dll

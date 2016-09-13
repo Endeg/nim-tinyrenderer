@@ -47,6 +47,7 @@ when isMainModule:
         break
       elif evt.kind == WindowEvent:
         render.present
+    delay 10
 
   destroy render
   destroy window
