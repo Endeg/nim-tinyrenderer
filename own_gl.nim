@@ -1,5 +1,5 @@
 import sdl2, sdl2/image
-import render_buffer, color
+import render_buffer, color, raster
 
 var
   buf = render_buffer.init[RenderColor]()
@@ -16,6 +16,8 @@ when isMainModule:
 
   #---- draw from render buffer starts here
 
+  buf.line(48, 77, 64, 56, rgb(200, 200, 200))
+
   buf.set(48, 77, rgb(255, 128, 128))
   buf.set(64, 56, rgb(255, 128, 255))
 
@@ -24,8 +26,6 @@ when isMainModule:
     render.drawPoint cint(x), cint(y)
 
   #---- end of drawing to render buffer
-
-  render.present
 
   var
     done = false
@@ -36,6 +36,8 @@ when isMainModule:
       if evt.kind == QuitEvent:
         done = true
         break
+      elif evt.kind == WindowEvent:
+        render.present
 
   destroy render
   destroy window
