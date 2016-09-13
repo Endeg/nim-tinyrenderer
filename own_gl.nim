@@ -13,7 +13,18 @@ when isMainModule:
 
   render.setDrawColor 0, 0, 0, 255
   render.clear
-  #draw from render buffer here
+
+  #---- draw from render buffer starts here
+
+  buf.set(48, 77, rgb(255, 128, 128))
+  buf.set(64, 56, rgb(255, 128, 255))
+
+  for x, y, col in buf.entries():
+    render.setDrawColor col.red, col.green, col.blue, col.alpha
+    render.drawPoint cint(x), cint(y)
+
+  #---- end of drawing to render buffer
+
   render.present
 
   var
