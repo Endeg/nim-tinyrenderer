@@ -1,4 +1,4 @@
-import tables, strutils
+import tables, strutils, parseutils
 
 type
   Vert* = object
@@ -12,6 +12,10 @@ type
 
   Model* = object
     meshes: Table[string, Mesh]
+
+proc readFloat(input: string): float =
+  if parseFloat(input, result) == 0:
+    raise newException(IOError, "Unable to parse '" & input & "' as float")
 
 proc loadObj*(fileName: string): Model =
   result.meshes = initTable[string, Mesh]()
@@ -37,7 +41,14 @@ proc loadObj*(fileName: string): Model =
           continue
 
         if currentMeshName != "" and tokens.len == 4 and command == "v":
-          echo currentMeshName & ": " & line
+          var v: Vert
+          v.x = readFloat(tokens[1])
+          v.y = readFloat(tokens[2])
+          v.z = readFloat(tokens[3]) 
+          result.meshes[currentMeshName].verts.add(v)
+          continue
+        
+        if currentMeshName != "" and tokens.len >= 4 and command == "f":
           continue
 
     except IOError:

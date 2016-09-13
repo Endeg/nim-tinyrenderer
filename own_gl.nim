@@ -9,7 +9,7 @@ const
 var
   buf = render_buffer.init[RenderColor]()
 
-  model = loadObj("models/fighterCharUV_PolygonDan.obj")
+  model = loadObj("models/fleur.obj")
 
 when isMainModule:
 
