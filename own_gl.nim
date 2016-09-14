@@ -18,6 +18,15 @@ proc applyOffset(v: Vert, offset: float = 1.0): Vec2i =
   result.x = int((v.x + offset) * WINDOW_WIDTH / offsetDouble)
   result.y = int((v.y + offset) * WINDOW_HEIGHT / offsetDouble) 
 
+proc drawRenderBufferToWindow(buf: RenderBuffer[RenderColor], render: RendererPtr) =
+  var pointOperations = 0
+  for x, y, col in buf.entries():
+    render.setDrawColor col.red, col.green, col.blue, col.alpha
+    render.drawPoint cint(x), WINDOW_HEIGHT - cint(y)
+    inc(pointOperations)
+  render.present
+  echo "Point operations: " & $pointOperations
+
 when isMainModule:
 
   discard sdl2.init(INIT_VIDEO)
@@ -38,14 +47,7 @@ when isMainModule:
     buf.triangle(vs, rgb(120, 120, 120))
   #---- end of drawing to render buffer
 
-  var pointOperations = 0
-
-  for x, y, col in buf.entries():
-    render.setDrawColor col.red, col.green, col.blue, col.alpha
-    render.drawPoint cint(x), WINDOW_HEIGHT - cint(y)
-    inc(pointOperations)
-
-  echo "Point operations: " & $pointOperations
+  drawRenderBufferToWindow(buf, render)
 
   var
     done = false
