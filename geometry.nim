@@ -1,4 +1,4 @@
-import types, basic3d
+import types, basic2d, basic3d
 
 proc getBbox*(input: openArray[Vec2i]): Bbox =
   #lack of this initial values can create funky results
@@ -41,3 +41,25 @@ proc normal*(tri: Triangle): Vector3d =
   result = cross(vec1, vec2)
   if result.len != 0.0:
     result.normalize()
+
+proc barycentric*(vsf: array[3, Vector2d], p: Vector2d): Vector3d =
+  var
+    s: array[2, Vector3d]
+
+  s[1].x = vsf[2].y - vsf[0].y
+  s[1].y = vsf[1].y - vsf[0].y
+  s[1].z = vsf[0].y - p.y
+
+  s[0].x = vsf[2].x - vsf[0].x
+  s[0].y = vsf[1].x - vsf[0].x
+  s[0].z = vsf[0].x - p.x
+  
+  let u = cross(s[0], s[1])
+  if (abs(u.z) > 1e-2):
+    result.x = 1.0 - (u.x + u.y) / u.z
+    result.y = u.y / u.z
+    result.z = u.x / u.z
+  else:
+    result.x = -1
+    result.y = 1
+    result.y = 1

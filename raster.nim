@@ -1,4 +1,4 @@
-import render_buffer, color, types, algorithm, geometry
+import render_buffer, color, types, algorithm, geometry, sequtils, basic2d
 
 template line*[P](self: var RenderBuffer[P],
                   x0: int, y0: int,
@@ -43,11 +43,19 @@ template triangle*(self: var RenderBuffer[RenderColor],
                    vs: var array[3, Vec2i],
                    col: RenderColor = rgb(255, 255, 255)) =
   let bb = getBbox(vs)
+  var vsf: array[3, Vector2d]
+  for i in vs.low..vs.high:
+    vsf[i].x = float(vs[i].x)
+    vsf[i].y = float(vs[i].y)
 
   for x in bb.min.x..bb.max.x:
     for y in bb.min.y..bb.max.y:
-      if pointInTriangle(vec2(x, y), vs):
-        self.set(x, y, col)
+      let
+        p = vector2d(float(x), float(y))
+        bcScreen = barycentric(vsf, p)
+      if bcScreen.x < 0.0 or bcScreen.y < 0.0 or bcScreen.z < 0.0:
+        continue
+      self.set(x, y, col)
 
   when defined(debug):
     self.line([vs[0], vs[1]], rgb(0, 255, 0))
