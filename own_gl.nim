@@ -37,15 +37,15 @@ when isMainModule:
 
   #---- draw from render buffer starts here
   for tri in model.triangles():
+    buf.drawLineForWindow(tri[0], tri[1], 8.0)
+    buf.drawLineForWindow(tri[1], tri[2], 8.0)
+    buf.drawLineForWindow(tri[2], tri[0], 8.0)
+    
     var vs: array[3, Vec2i]
     vs[0] = applyOffset(tri[0], 8.0)
     vs[1] = applyOffset(tri[1], 8.0)
     vs[2] = applyOffset(tri[2], 8.0)
     buf.triangle(vs)
-
-    #buf.drawLineForWindow(tri[0], tri[1], 8.0)
-    #buf.drawLineForWindow(tri[1], tri[2], 8.0)
-    #buf.drawLineForWindow(tri[2], tri[0], 8.0)
 
   var pointOperations = 0
 

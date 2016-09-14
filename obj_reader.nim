@@ -33,11 +33,11 @@ proc extractIndexes(input: string): IndexGroup =
   result.t = -1
   result.n = -1
 
-  if count >= 1:
+  if count >= 1 and ind[0] != "":
     result.v = readInt(ind[0]) - 1
-  if count >= 2:
+  if count >= 2 and ind[1] != "":
     result.t = readInt(ind[1]) - 1
-  if count >= 3:
+  if count >= 3 and ind[2] != "":
     result.n = readInt(ind[2]) - 1
 
 proc smartSplit(input: string): seq[string] =
@@ -88,7 +88,8 @@ proc loadObj*(fileName: string): Model =
         elif tokens.len >= 4 and command == "f":
           let faceElements = map(tokens[1..tokens.len - 1], extractIndexes)
           if faceElements.len > 3:
-            raise newException(IOError, "Non-triangle faces not supported")
+            #raise newException(IOError, "Non-triangle faces not supported")
+            continue
 
           var f: Face
           f[0] = faceElements[0]
