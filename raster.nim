@@ -27,7 +27,12 @@ template line*[P](self: var RenderBuffer[P],
       self.set(y, x, col)
     else:
       self.set(x, y, col)
-     
+
+template line*[P](self: var RenderBuffer[P],
+                  vs: array[2, Vec2i],
+                  col: P) =
+  self.line(vs[0].x, vs[0].y, vs[1].x, vs[1].y, col)
+
 template line*[P](self: var RenderBuffer[P],
                   x0: float, y0: float,
                   x1: float, y1: float,
@@ -35,9 +40,9 @@ template line*[P](self: var RenderBuffer[P],
   self.line(int(x0), int(y0), int(x1), int(y1), col)
 
 template triangle*(self: var RenderBuffer[RenderColor],
-                   vs: var array[3, Vert],
+                   vs: var array[3, Vec2i],
                    col: RenderColor = rgb(255, 255, 255)) =
-  vs.sort do (x, y: Vert) -> int:
+  vs.sort do (x, y: Vec2i) -> int:
     result = cmp(x.y, y.y)                  
 
   let totalHeight = vs[2].y - vs[0].y
@@ -47,16 +52,10 @@ template triangle*(self: var RenderBuffer[RenderColor],
       segmentHeight = vs[1].y - vs[0].y + 1
       alpha = float(y - vs[0].y) / totalHeight
       beta = float(y - vs[0].y) / segmentHeight
+      ax = vs[0].x + (vs[2].x - vs[0].x) * alpha
+      ay = vs[0].y + (vs[2].y - vs[0].y) * alpha
+      bx = vs[0].x + (vs[1].x - vs[0].x) * beta
+      by = vs[0].y + (vs[1].y - vs[0].y) * beta
 
-  let
-    ax = vs[0].x + (vs[2].x - vs[0].x) * alpha
-    ay = vs[0].y + (vs[2].y - vs[0].y) * alpha
-    bx = vs[0].x + (vs[1].x - vs[0].x) * beta
-    by = vs[0].y + (vs[1].y - vs[0].y) * beta
-
-  self.set(ax, y, rgb(255, 0, 0))
-  self.set(bx, y, rgb(0, 255, 0))
-
-  #self.line(vs[0].x, vs[0].y, vs[1].x, vs[1].y, rgb(0, 255, 0))
-  #self.line(vs[1].x, vs[1].y, vs[2].x, vs[2].y, rgb(0, 255, 0))
-  #self.line(vs[2].x, vs[2].y, vs[0].x, vs[0].y, rgb(255, 0, 0))
+    self.set(ax, y, rgb(255, 0, 0))
+    self.set(bx, y, rgb(0, 255, 0))
