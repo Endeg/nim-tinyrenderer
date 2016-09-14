@@ -4,8 +4,8 @@ import render_buffer, color, raster, types, geometry
 import algorithm, random, basic3d
 
 const
-  WINDOW_WIDTH = 900
-  WINDOW_HEIGHT = 900
+  WINDOW_WIDTH = 960
+  WINDOW_HEIGHT = 960
 
 var
   buf = render_buffer.init[RenderColor](WINDOW_WIDTH, WINDOW_HEIGHT)

@@ -9,7 +9,19 @@ var
 
 proc initApp*(width, height: int) =
   discard sdl2.init(INIT_VIDEO)
-  window = createWindow("Own GL", 100, 100, cint(width), cint(height), SDL_WINDOW_SHOWN)
+
+  var
+    dm: DisplayMode
+    x = cint(0)
+    y = cint(0)
+
+  if getCurrentDisplayMode(0, dm) == SdlSuccess:
+    x = cint(dm.w div 2 - width div 2)
+    y = cint(dm.h div 2 - height div 2)
+  else:
+    echo "Unable to get display mode"
+
+  window = createWindow("Own GL", x, y, cint(width), cint(height), SDL_WINDOW_SHOWN)
   render = createRenderer(window, -1, Renderer_Software)
   screenHeight = height
 
