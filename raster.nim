@@ -42,23 +42,11 @@ template line*[P](self: var RenderBuffer[P],
 template triangle*(self: var RenderBuffer[RenderColor],
                    vs: var array[3, Vec2i],
                    col: RenderColor = rgb(255, 255, 255)) =
-  vs.sort do (x, y: Vec2i) -> int:
-    result = cmp(x.y, y.y)                  
+  let bb = getBbox(vs)
 
-  let totalHeight = float(vs[2].y - vs[0].y)
-
-  for y in vs[0].y..vs[1].y:
-    let
-      segmentHeight = vs[1].y - vs[0].y + 1
-      alpha = float(y - vs[0].y) / totalHeight
-      beta = float(y - vs[0].y) / float(segmentHeight)
-      ax = int(float(vs[0].x + (vs[2].x - vs[0].x)) * alpha)
-      ay = int(float(vs[0].y + (vs[2].y - vs[0].y)) * alpha)
-      bx = int(float(vs[0].x + (vs[1].x - vs[0].x)) * beta)
-      by = int(float(vs[0].y + (vs[1].y - vs[0].y)) * beta)
-
-    self.set(ax, y, col)
-    self.set(bx, y, col)
+  for x in bb.min.x..bb.max.x:
+    for y in bb.min.y..bb.max.y:
+      self.set(x, y, col)
   
   self.line([vs[0], vs[1]], rgb(0, 255, 0))
   self.line([vs[1], vs[2]], rgb(0, 255, 0))

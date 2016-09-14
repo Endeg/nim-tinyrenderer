@@ -11,7 +11,7 @@ const
 var
   buf = render_buffer.init[RenderColor](WINDOW_WIDTH, WINDOW_HEIGHT)
 
-  model = loadObj("models/fighterCharUV_PolygonDan.obj")
+  model = loadObj("models/fighterCharUV_PolygonDan.1obj")
 
 proc applyOffset(v: Vert, offset: float = 1.0): Vec2i =
   let offsetDouble = offset * 2.0
