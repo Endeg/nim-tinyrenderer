@@ -11,7 +11,7 @@ const
 var
   buf = render_buffer.init[RenderColor](WINDOW_WIDTH, WINDOW_HEIGHT)
 
-  model = loadObj("models/Tails/Tails.obj")
+  model = loadObj("models/fighterCharUV_PolygonDan.obj")
 
 template drawLineForWindow(self: RenderBuffer, v0: Vert, v1: Vert, offset: float = 1.0) =
   let offsetDouble = offset * 2.0
@@ -19,10 +19,10 @@ template drawLineForWindow(self: RenderBuffer, v0: Vert, v1: Vert, offset: float
            (v1.x + offset) * WINDOW_WIDTH / offsetDouble, (v1.y + offset) * WINDOW_HEIGHT / offsetDouble,
            rgb(200, 200, 200))
 
-proc applyOffset(v: var Vert, offset: float = 1.0) =
+proc applyOffset(v: Vert, offset: float = 1.0): Vec2i =
   let offsetDouble = offset * 2.0
-  v.x = (v.x + offset) * WINDOW_WIDTH / offsetDouble
-  v.y = (v.y + offset) * WINDOW_HEIGHT / offsetDouble 
+  result.x = int((v.x + offset) * WINDOW_WIDTH / offsetDouble)
+  result.y = int((v.y + offset) * WINDOW_HEIGHT / offsetDouble) 
 
 when isMainModule:
 
@@ -37,11 +37,11 @@ when isMainModule:
 
   #---- draw from render buffer starts here
   for tri in model.triangles():
-    var mutTri = tri
-    applyOffset(mutTri[0], 8.0)
-    applyOffset(mutTri[1], 8.0)
-    applyOffset(mutTri[2], 8.0)
-    buf.triangle(mutTri)
+    var vs: array[3, Vec2i]
+    vs[0] = applyOffset(tri[0], 8.0)
+    vs[1] = applyOffset(tri[1], 8.0)
+    vs[2] = applyOffset(tri[2], 8.0)
+    buf.triangle(vs)
 
     #buf.drawLineForWindow(tri[0], tri[1], 8.0)
     #buf.drawLineForWindow(tri[1], tri[2], 8.0)
