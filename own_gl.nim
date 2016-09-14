@@ -21,6 +21,9 @@ proc applyOffset(v: Vert, offset: float = 1.0): Vec2i =
 proc drawRenderBufferToWindow(buf: RenderBuffer[RenderColor], render: RendererPtr) =
   var pointOperations = 0
   for x, y, col in buf.entries():
+    when defined(debug):
+      echo $x & "x" & $y & ": " & $col.red & " " & $col.green & " " & $col.blue & " " & $col.alpha
+
     render.setDrawColor col.red, col.green, col.blue, col.alpha
     render.drawPoint cint(x), WINDOW_HEIGHT - cint(y)
     inc(pointOperations)
@@ -44,11 +47,12 @@ when isMainModule:
     vs[0] = applyOffset(tri[0], 1.0)
     vs[1] = applyOffset(tri[1], 1.0)
     vs[2] = applyOffset(tri[2], 1.0)
-    buf.triangle(vs, rgb(byte(random(255)), byte(random(255)), byte(random(255))))
+    let col = rgb(byte(random(255)), byte(random(255)), byte(random(255)))
+    buf.triangle(vs, col)
   #---- end of drawing to render buffer
 
-    drawRenderBufferToWindow(buf, render)
-    delay(50)
+  drawRenderBufferToWindow(buf, render)
+    
 
   var
     done = false
