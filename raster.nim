@@ -49,13 +49,17 @@ template triangle*(self: var RenderBuffer[RenderColor],
 
   for y in vs[0].y..vs[1].y:
     let
-      segmentHeight = float(vs[1].y - vs[0].y + 1)
+      segmentHeight = vs[1].y - vs[0].y + 1
       alpha = float(y - vs[0].y) / totalHeight
-      beta = float(y - vs[0].y) / segmentHeight
+      beta = float(y - vs[0].y) / float(segmentHeight)
       ax = int(float(vs[0].x + (vs[2].x - vs[0].x)) * alpha)
       ay = int(float(vs[0].y + (vs[2].y - vs[0].y)) * alpha)
       bx = int(float(vs[0].x + (vs[1].x - vs[0].x)) * beta)
       by = int(float(vs[0].y + (vs[1].y - vs[0].y)) * beta)
 
-    self.set(ax, y, rgb(255, 0, 0))
-    self.set(bx, y, rgb(0, 255, 0))
+    self.set(ax, y, col)
+    self.set(bx, y, col)
+  
+  self.line([vs[0], vs[1]], rgb(0, 255, 0))
+  self.line([vs[1], vs[2]], rgb(0, 255, 0))
+  self.line([vs[2], vs[0]], rgb(255, 0, 0))

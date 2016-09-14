@@ -36,9 +36,20 @@ when isMainModule:
     vs[1] = applyOffset(tri[1], 8.0)
     vs[2] = applyOffset(tri[2], 8.0)
     buf.triangle(vs)
-    buf.line([vs[0], vs[1]], rgb(200, 0, 0))
-    buf.line([vs[1], vs[2]], rgb(0, 200, 0))
-    buf.line([vs[2], vs[0]], rgb(0, 0, 200))
+    #buf.line([vs[0], vs[1]], rgb(200, 0, 0))
+    #buf.line([vs[1], vs[2]], rgb(0, 200, 0))
+    #buf.line([vs[2], vs[0]], rgb(0, 0, 200))
+
+  var
+    t0 = [vec2(10, 70), vec2(50, 160),  vec2(70, 80)]
+    t1 = [vec2(180, 50), vec2(150, 1), vec2(70, 180)]
+    t2 = [vec2(180, 150), vec2(120, 160), vec2(130, 180)]
+
+  buf.triangle(t0, rgb(255, 0, 0))
+  buf.triangle(t1, rgb(255, 255, 255))
+  buf.triangle(t2, rgb(0, 255, 0))
+
+  #---- end of drawing to render buffer
 
   var pointOperations = 0
 
@@ -46,7 +57,7 @@ when isMainModule:
     render.setDrawColor col.red, col.green, col.blue, col.alpha
     render.drawPoint cint(x), WINDOW_HEIGHT - cint(y)
     inc(pointOperations)
-  #---- end of drawing to render buffer
+  
 
   echo "Point operations: " & $pointOperations
 
