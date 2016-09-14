@@ -38,7 +38,5 @@ proc normal*(tri: Triangle): Vector3d =
     vec1 = vector3d(side1.x, side1.y, side1.z)
     vec2 = vector3d(side2.x, side2.y, side2.z)
 
-  vec1.normalize()
-  vec2.normalize()
-
   result = cross(vec1, vec2)
+  result.normalize()
