@@ -39,4 +39,5 @@ proc normal*(tri: Triangle): Vector3d =
     vec2 = vector3d(side2.x, side2.y, side2.z)
 
   result = cross(vec1, vec2)
-  result.normalize()
+  if result.len != 0.0:
+    result.normalize()

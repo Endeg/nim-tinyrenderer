@@ -88,8 +88,7 @@ proc loadObj*(fileName: string): Model =
         elif tokens.len >= 4 and command == "f":
           let faceElements = map(tokens[1..tokens.len - 1], extractIndexes)
           if faceElements.len > 3:
-            #raise newException(IOError, "Non-triangle faces not supported")
-            continue
+            raise newException(IOError, "Non-triangle faces not supported")
 
           var f: Face
           f[0] = faceElements[0]
