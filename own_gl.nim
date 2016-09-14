@@ -1,5 +1,4 @@
-import sdl2, sdl2/image
-import obj_reader
+import obj_reader, app
 import render_buffer, color, raster, types, geometry
 
 import algorithm, random, basic3d
@@ -18,30 +17,7 @@ proc applyOffset(v: Point3d, offset: float = 1.0, y = 0): Vec2i =
   result.x = int((v.x + offset) * WINDOW_WIDTH / offsetDouble)
   result.y = int((v.y + offset) * WINDOW_HEIGHT / offsetDouble) - y 
 
-proc drawRenderBufferToWindow(buf: RenderBuffer[RenderColor], render: RendererPtr) =
-  var pointOperations = 0
-  for x, y, col in buf.entries():
-    when defined(debug):
-      echo $x & "x" & $y & ": " & $col.red & " " & $col.green & " " & $col.blue & " " & $col.alpha
-
-    render.setDrawColor col.red, col.green, col.blue, col.alpha
-    render.drawPoint cint(x), WINDOW_HEIGHT - cint(y)
-    inc(pointOperations)
-  render.present
-  echo "Point operations: " & $pointOperations
-
-when isMainModule:
-
-  discard sdl2.init(INIT_VIDEO)
-  let
-    window = createWindow("Own GL", 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT,
-                          SDL_WINDOW_SHOWN)
-    render = createRenderer(window, -1, Renderer_Software)
-
-  render.setDrawColor 0, 0, 0, 255
-  render.clear
-
-  #---- draw from render buffer starts here
+proc drawToRenderBuffer() =
   let
     lightDir = vector3d(0, 0, -1)
 
@@ -56,22 +32,9 @@ when isMainModule:
     if intensity > 0:
       let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
       buf.triangle(vs, col)
-  #---- end of drawing to render buffer
 
-  drawRenderBufferToWindow(buf, render)
-
-  var
-    done = false
-    evt = sdl2.defaultEvent
-
-  while not done:
-    while pollEvent(evt):
-      if evt.kind == QuitEvent:
-        done = true
-        break
-      elif evt.kind == WindowEvent:
-        render.present
-    delay 10
-
-  destroy render
-  destroy window
+when isMainModule:
+  initApp(WINDOW_WIDTH, WINDOW_HEIGHT)
+  drawToRenderBuffer()
+  drawRenderBufferToWindow(buf)
+  waitForAppClose()
