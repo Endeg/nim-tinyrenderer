@@ -1,4 +1,4 @@
-import render_buffer, color, types, algorithm
+import render_buffer, color, types, algorithm, geometry
 
 template line*[P](self: var RenderBuffer[P],
                   x0: int, y0: int,
@@ -46,8 +46,10 @@ template triangle*(self: var RenderBuffer[RenderColor],
 
   for x in bb.min.x..bb.max.x:
     for y in bb.min.y..bb.max.y:
-      self.set(x, y, col)
-  
-  self.line([vs[0], vs[1]], rgb(0, 255, 0))
-  self.line([vs[1], vs[2]], rgb(0, 255, 0))
-  self.line([vs[2], vs[0]], rgb(255, 0, 0))
+      if pointInTriangle(vec2(x, y), vs):
+        self.set(x, y, col)
+
+  when defined(debug):
+    self.line([vs[0], vs[1]], rgb(0, 255, 0))
+    self.line([vs[1], vs[2]], rgb(0, 255, 0))
+    self.line([vs[2], vs[0]], rgb(255, 0, 0))
