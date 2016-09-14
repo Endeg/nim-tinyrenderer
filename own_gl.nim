@@ -44,10 +44,11 @@ when isMainModule:
     vs[0] = applyOffset(tri[0], 1.0)
     vs[1] = applyOffset(tri[1], 1.0)
     vs[2] = applyOffset(tri[2], 1.0)
-    buf.triangle(vs, rgb(120, 120, 120))
+    buf.triangle(vs, rgb(byte(random(255)), byte(random(255)), byte(random(255))))
   #---- end of drawing to render buffer
 
-  drawRenderBufferToWindow(buf, render)
+    drawRenderBufferToWindow(buf, render)
+    delay(50)
 
   var
     done = false
