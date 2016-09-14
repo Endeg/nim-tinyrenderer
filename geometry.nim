@@ -1,4 +1,4 @@
-import types
+import types, basic3d
 
 proc getBbox*(input: openArray[Vec2i]): Bbox =
   #lack of this initial values can create funky results
@@ -28,3 +28,8 @@ proc pointInTriangle*(p: Vec2i, tri: array[3, Vec2i]): bool =
     b3 = sign(p, [tri[2], tri[0]]) < 0
 
   result = (b1 == b2) and (b2 == b3)
+
+proc normal*(tri: Triangle): Vector3d =
+  result.x = 0.5
+  result.y = 0.5
+  result.z = 0.5

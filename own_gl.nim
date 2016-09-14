@@ -1,6 +1,6 @@
 import sdl2, sdl2/image
 import obj_reader
-import render_buffer, color, raster, types
+import render_buffer, color, raster, types, geometry
 
 import algorithm, random, basic3d
 
@@ -42,17 +42,23 @@ when isMainModule:
   render.clear
 
   #---- draw from render buffer starts here
+  let
+    lightDir = vector3d(0, 0, -1)
+
   for tri in model.triangles():
     var vs: array[3, Vec2i]
     vs[0] = applyOffset(tri[0], 1.0)
     vs[1] = applyOffset(tri[1], 1.0)
     vs[2] = applyOffset(tri[2], 1.0)
-    let col = rgb(byte(random(255)), byte(random(255)), byte(random(255)))
+
+    let
+      intensity = dot(tri.normal(), lightDir)
+
+    let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
     buf.triangle(vs, col)
   #---- end of drawing to render buffer
 
   drawRenderBufferToWindow(buf, render)
-    
 
   var
     done = false
