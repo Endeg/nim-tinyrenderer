@@ -2,7 +2,7 @@ import sdl2, sdl2/image
 import obj_reader
 import render_buffer, color, raster, types
 
-import algorithm, random
+import algorithm, random, basic3d
 
 const
   WINDOW_WIDTH = 256
@@ -13,7 +13,7 @@ var
 
   model = loadObj("models/african_head/african_head.obj")
 
-proc applyOffset(v: Vert, offset: float = 1.0): Vec2i =
+proc applyOffset(v: Point3d, offset: float = 1.0): Vec2i =
   let offsetDouble = offset * 2.0
   result.x = int((v.x + offset) * WINDOW_WIDTH / offsetDouble)
   result.y = int((v.y + offset) * WINDOW_HEIGHT / offsetDouble) 

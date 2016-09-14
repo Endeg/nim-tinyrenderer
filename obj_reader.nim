@@ -1,4 +1,4 @@
-import tables, strutils, parseutils, sequtils
+import tables, strutils, parseutils, sequtils, basic3d
 import types
 
 type
@@ -10,7 +10,7 @@ type
   Face* = array[0..2, IndexGroup]
 
   Mesh* = object
-    verts: seq[Vert]
+    verts: seq[Point3d]
     faces: seq[Face]
 
   Model* = object
@@ -79,7 +79,7 @@ proc loadObj*(fileName: string): Model =
           result.meshes[meshName] = Mesh(verts: @[], faces: @[])
 
         elif tokens.len == 4 and command == "v":
-          var v: Vert
+          var v: Point3d
           v.x = readFloat(tokens[1])
           v.y = readFloat(tokens[2])
           v.z = readFloat(tokens[3]) 
