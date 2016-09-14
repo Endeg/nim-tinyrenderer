@@ -53,9 +53,9 @@ when isMainModule:
 
     let
       intensity = dot(tri.normal(), lightDir)
-
-    let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
-    buf.triangle(vs, col)
+    if intensity > 0:
+      let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
+      buf.triangle(vs, col)
   #---- end of drawing to render buffer
 
   drawRenderBufferToWindow(buf, render)

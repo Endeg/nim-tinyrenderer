@@ -30,6 +30,15 @@ proc pointInTriangle*(p: Vec2i, tri: array[3, Vec2i]): bool =
   result = (b1 == b2) and (b2 == b3)
 
 proc normal*(tri: Triangle): Vector3d =
-  result.x = 0.5
-  result.y = 0.5
-  result.z = 0.5
+  let
+    side1 = tri[0] - tri[1]
+    side2 = tri[0] - tri[2]
+
+  var
+    vec1 = vector3d(side1.x, side1.y, side1.z)
+    vec2 = vector3d(side2.x, side2.y, side2.z)
+
+  vec1.normalize()
+  vec2.normalize()
+
+  result = cross(vec1, vec2)
