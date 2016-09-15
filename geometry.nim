@@ -31,14 +31,14 @@ proc pointInTriangle*(p: Vec2i, tri: array[3, Vec2i]): bool =
 
 proc normal*(tri: Triangle): Vector3d =
   let
-    side1 = tri[0] - tri[1]
-    side2 = tri[0] - tri[2]
+    u = tri[1] - tri[0]
+    v = tri[2] - tri[1]
 
   var
-    vec1 = vector3d(side1.x, side1.y, side1.z)
-    vec2 = vector3d(side2.x, side2.y, side2.z)
+    vecU = vector3d(u.x, u.y, u.z)
+    vecV = vector3d(v.x, v.y, v.z)
 
-  result = cross(vec1, vec2)
+  result = cross(vecV, vecU)
   if result.len != 0.0:
     result.normalize()
 

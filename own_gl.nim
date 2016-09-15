@@ -4,14 +4,14 @@ import render_buffer, color, raster, types, geometry
 import algorithm, random, basic3d
 
 const
-  WINDOW_WIDTH = 256
-  WINDOW_HEIGHT = 256
+  WINDOW_WIDTH = 900
+  WINDOW_HEIGHT = 900
 
 var
   buf = render_buffer.init[RenderColor](rgb(0, 0, 0), WINDOW_WIDTH, WINDOW_HEIGHT)
   zBuffer = render_buffer.init[float](-999999.0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
-  model = loadObj("models/african_head/african_head.obj")
+  model = loadObj("models/Tails/Tails.obj")
 
 proc applyOffset(v: Point3d, offset: float = 1.0, y = 0): Vec2i =
   let offsetDouble = offset * 2.0
@@ -24,9 +24,9 @@ proc drawToRenderBuffer() =
 
   for tri in model.triangles():
     var vs: array[3, Vec2i]
-    vs[0] = applyOffset(tri[0], 1.0)
-    vs[1] = applyOffset(tri[1], 1.0)
-    vs[2] = applyOffset(tri[2], 1.0)
+    vs[0] = applyOffset(tri[0], 5.0, WINDOW_HEIGHT div 2)
+    vs[1] = applyOffset(tri[1], 5.0, WINDOW_HEIGHT div 2)
+    vs[2] = applyOffset(tri[2], 5.0, WINDOW_HEIGHT div 2)
 
     let
       intensity = dot(tri.normal(), lightDir)
@@ -37,6 +37,6 @@ proc drawToRenderBuffer() =
 when isMainModule:
   initApp(WINDOW_WIDTH, WINDOW_HEIGHT)
   drawToRenderBuffer()
-  #drawRenderBufferToWindow(buf)
-  drawZBufferToWindow(zBuffer)
+  drawRenderBufferToWindow(buf)
+  #drawZBufferToWindow(zBuffer)
   waitForAppClose()
