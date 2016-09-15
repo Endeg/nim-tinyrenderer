@@ -1,4 +1,4 @@
-import tables
+import tables, color
 
 #TODO: better name?
 
@@ -9,11 +9,13 @@ type
 
   RenderBuffer*[P] = object
     map: Table[RenderBufferKey, P]
+    defaultValue: P
     width: int
     height: int
 
-proc init*[P](width: int = 0, height: int = 0): RenderBuffer[P] =
+proc init*[P](defaultValue: P, width: int = 0, height: int = 0): RenderBuffer[P] =
   result.map = initTable[RenderBufferKey, P]()
+  result.defaultValue = defaultValue
   result.width = width
   result.height = height
 
@@ -26,3 +28,6 @@ proc set*[P](self: var RenderBuffer[P], x: int, y: int, value: P) =
 iterator entries*[P](self: RenderBuffer[P]): (int, int, P) =
   for k, v in self.map.pairs():
     yield (k.x, k.y, v)
+
+proc get*[P](self: RenderBuffer[P], x, y: int): P =
+  result = self.map.getOrDefault((x, y), self.defaultValue)

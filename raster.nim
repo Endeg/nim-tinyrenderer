@@ -40,11 +40,13 @@ template line*[P](self: var RenderBuffer[P],
   self.line(int(x0), int(y0), int(x1), int(y1), col)
 
 template triangle*(self: var RenderBuffer[RenderColor],
-                   vs: var array[3, Vec2i],
+                   zBuffer: var RenderBuffer[float],
+                   worldCoords: Triangle,
+                   screenCoords: array[3, Vec2i],
                    col: RenderColor = rgb(255, 255, 255)) =
   let bb = getBbox(vs)
   var vsf: array[3, Vector2d]
-  for i in vs.low..vs.high:
+  for i in screenCoords.low..screenCoords.high:
     vsf[i].x = float(vs[i].x)
     vsf[i].y = float(vs[i].y)
 
