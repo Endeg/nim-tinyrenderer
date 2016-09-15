@@ -28,18 +28,11 @@ proc drawToRenderBuffer() =
     vs[1] = applyOffset(tri[1], 1.0)
     vs[2] = applyOffset(tri[2], 1.0)
 
-    #Mirroring z for now
-    var mtri: array[3, Point3d]
-    for i in tri.low..tri.high:
-      mtri[i].x = tri[i].x
-      mtri[i].y = tri[i].y
-      mtri[i].z = -tri[i].z
-
     let
-      intensity = dot(mtri.normal(), lightDir)
+      intensity = dot(tri.normal(), lightDir)
     if intensity > 0:
       let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
-      buf.triangle(zBuffer, mtri, vs, col)
+      buf.triangle(zBuffer, tri, vs, col)
 
 when isMainModule:
   initApp(WINDOW_WIDTH, WINDOW_HEIGHT)
