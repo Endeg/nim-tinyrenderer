@@ -8,6 +8,7 @@ type
     y: int
 
   RenderBuffer*[P] = object
+    #TODO: Use seq[x + y * w] instead
     map: Table[RenderBufferKey, P]
     defaultValue: P
     width: int

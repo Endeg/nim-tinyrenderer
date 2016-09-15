@@ -1,4 +1,4 @@
-import obj_reader, app
+import obj_reader, texture, app
 import render_buffer, color, raster, types, geometry
 
 import algorithm, random, basic3d
@@ -12,6 +12,7 @@ var
   zBuffer = render_buffer.init[float](-999999.0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
   model = loadObj("models/african_head/african_head.obj")
+  tex = loadTexture("models/Tails/Tails.JPG")
 
 proc applyOffset(v: Point3d, offset: float = 1.0, y = 0): Vec2i =
   let offsetDouble = offset * 2.0
@@ -46,6 +47,7 @@ proc drawToRenderBuffer() =
 when isMainModule:
   initApp(WINDOW_WIDTH, WINDOW_HEIGHT)
   drawToRenderBuffer()
-  drawRenderBufferToWindow(buf)
+  #drawRenderBufferToWindow(buf)
   #drawZBufferToWindow(zBuffer)
+  drawRenderBufferToWindow(tex)
   waitForAppClose()

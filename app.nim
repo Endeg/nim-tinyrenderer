@@ -1,4 +1,4 @@
-import sdl2, sdl2/image
+import sdl2
 
 import render_buffer, color
 
