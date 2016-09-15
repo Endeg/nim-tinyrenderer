@@ -30,4 +30,6 @@ iterator entries*[P](self: RenderBuffer[P]): (int, int, P) =
     yield (k.x, k.y, v)
 
 proc get*[P](self: RenderBuffer[P], x, y: int): P =
-  result = self.map.getOrDefault((x, y), self.defaultValue)
+  result = self.defaultValue
+  if self.map.hasKey((x, y)):
+    result = self.map[(x, y)]

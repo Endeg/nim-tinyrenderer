@@ -57,7 +57,14 @@ template triangle*(self: var RenderBuffer[RenderColor],
         bcScreen = barycentric(vsf, p)
       if bcScreen.x < 0.0 or bcScreen.y < 0.0 or bcScreen.z < 0.0:
         continue
-      self.set(x, y, col)
+      var
+        z = 0.0
+      z = z + worldCoords[0].z * bcScreen.x
+      z = z + worldCoords[1].z * bcScreen.y
+      z = z + worldCoords[2].z * bcScreen.z
+      if zBuffer.get(x, y) < z:
+        zBuffer.set(x, y, z)
+        self.set(x, y, col)
 
   when defined(debug):
     self.line([vs[0], vs[1]], rgb(0, 255, 0))

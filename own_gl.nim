@@ -4,8 +4,8 @@ import render_buffer, color, raster, types, geometry
 import algorithm, random, basic3d
 
 const
-  WINDOW_WIDTH = 128
-  WINDOW_HEIGHT = 128
+  WINDOW_WIDTH = 256
+  WINDOW_HEIGHT = 256
 
 var
   buf = render_buffer.init[RenderColor](rgb(0, 0, 0), WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -28,11 +28,18 @@ proc drawToRenderBuffer() =
     vs[1] = applyOffset(tri[1], 1.0)
     vs[2] = applyOffset(tri[2], 1.0)
 
+    #Mirroring z for now
+    var mtri: array[3, Point3d]
+    for i in tri.low..tri.high:
+      mtri[i].x = tri[i].x
+      mtri[i].y = tri[i].y
+      mtri[i].z = -tri[i].z
+
     let
-      intensity = dot(tri.normal(), lightDir)
+      intensity = dot(mtri.normal(), lightDir)
     if intensity > 0:
       let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
-      buf.triangle(zBuffer, tri, vs, col)
+      buf.triangle(zBuffer, mtri, vs, col)
 
 when isMainModule:
   initApp(WINDOW_WIDTH, WINDOW_HEIGHT)
