@@ -29,7 +29,7 @@ proc pointInTriangle*(p: Vec2i, tri: array[3, Vec2i]): bool =
 
   result = (b1 == b2) and (b2 == b3)
 
-proc normal*(tri: Triangle): Vector3d =
+proc normal*(tri: array[3, Point3d]): Vector3d =
   let
     u = tri[1] - tri[0]
     v = tri[2] - tri[1]

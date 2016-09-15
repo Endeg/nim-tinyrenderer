@@ -1,4 +1,4 @@
-import tables, strutils, parseutils, sequtils, basic3d
+import tables, strutils, parseutils, sequtils, basic2d, basic3d
 import types
 
 type
@@ -11,6 +11,7 @@ type
 
   Mesh* = object
     verts: seq[Point3d]
+    texCoords: seq[Point2d]
     faces: seq[Face]
 
   Model* = object
@@ -48,10 +49,10 @@ proc smartSplit(input: string): seq[string] =
     if stripped != "":
       result.add(stripped)
 
-iterator triangles*(self: Model): Triangle =
+iterator triangles*(self: Model): array[3, Point3d] =
   for m in self.meshes.values():
     for f in m.faces:
-      var tri: Triangle
+      var tri: array[3, Point3d]
       tri[0] = m.verts[f[0].v]
       tri[1] = m.verts[f[1].v]
       tri[2] = m.verts[f[2].v]
@@ -69,7 +70,7 @@ proc loadObj*(fileName: string): Model =
   if open(f, fileName):
     try:
       var currentMeshName = "~~~scratch~~~"
-      result.meshes[currentMeshName] = Mesh(verts: @[], faces: @[])
+      result.meshes[currentMeshName] = Mesh(verts: @[], texCoords: @[], faces: @[])
       while not f.endOfFile:
         let line = f.readLine
         let tokens = line.smartSplit()
@@ -77,12 +78,12 @@ proc loadObj*(fileName: string): Model =
         if tokens.len == 0:
           continue
 
-        let command = tokens[0].strip()
+        let command = tokens[0]
 
         if tokens.len == 2 and command == "o":
           let meshName = tokens[1]
           currentMeshName = meshName
-          result.meshes[meshName] = Mesh(verts: @[], faces: @[])
+          result.meshes[meshName] = Mesh(verts: @[], texCoords: @[], faces: @[])
 
         elif tokens.len == 4 and command == "v":
           var v: Point3d
@@ -91,7 +92,9 @@ proc loadObj*(fileName: string): Model =
           v.z = readFloat(tokens[3]) 
           result.meshes[currentMeshName].verts.add(v)
           inc vertsCount
-        
+        elif (tokens.len == 3 or tokens.len == 4) and command == "vt":
+          let texCoord = point2d(readFloat(tokens[1]), readFloat(tokens[2]))
+          result.meshes[currentMeshName].texCoords.add(texCoord)
         elif tokens.len >= 4 and command == "f":
           let faceElements = map(tokens[1..tokens.len - 1], extractIndexes)
 

@@ -1,4 +1,4 @@
-import render_buffer, color, types, algorithm, geometry, sequtils, basic2d
+import render_buffer, color, types, algorithm, geometry, sequtils, basic2d, basic3d
 
 template line*[P](self: var RenderBuffer[P],
                   x0: int, y0: int,
@@ -41,7 +41,7 @@ template line*[P](self: var RenderBuffer[P],
 
 template triangle*(self: var RenderBuffer[RenderColor],
                    zBuffer: var RenderBuffer[float],
-                   worldCoords: Triangle,
+                   worldCoords: array[3, Point3d],
                    screenCoords: array[3, Vec2i],
                    col: RenderColor = rgb(255, 255, 255)) =
   let bb = getBbox(vs)
