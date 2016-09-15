@@ -12,7 +12,7 @@ var
   zBuffer = render_buffer.init[float](-999999.0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
   model = loadObj("models/african_head/african_head.obj")
-  tex = loadTexture("models/Tails/Tails.JPG")
+  tex = loadTexture("models/african_head/african_head_diffuse.tga")
 
 proc applyOffset(v: Point3d, offset: float = 1.0, y = 0): Vec2i =
   let offsetDouble = offset * 2.0
