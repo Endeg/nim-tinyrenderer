@@ -44,7 +44,27 @@ proc drawRenderBufferToWindow*(buf: RenderBuffer[RenderColor]) =
   echo "Point operations: " & $pointOperations
 
   render.present
+
+proc drawZBufferToWindow*(zBuffer: RenderBuffer[float], near: float = 1.0, far: float = 30.0) =
+  if render == nil:
+    raise newException(SystemError, "Init app first.")
   
+  render.setDrawColor 0, 0, 0, 255
+  render.clear
+
+  var pointOperations = 0
+  for x, y, z in zBuffer.entries():
+    
+    let c = byte(255.0 * (2.0 * near) / (far + near - z * (far - near)))
+
+    render.setDrawColor c, c, c, 255
+    render.drawPoint cint(x), cint(screenHeight - y)
+    inc(pointOperations)
+
+  echo "Point operations: " & $pointOperations
+
+  render.present
+
 proc waitForAppClose*() =
   var
     done = false

@@ -37,5 +37,6 @@ proc drawToRenderBuffer() =
 when isMainModule:
   initApp(WINDOW_WIDTH, WINDOW_HEIGHT)
   drawToRenderBuffer()
-  drawRenderBufferToWindow(buf)
+  #drawRenderBufferToWindow(buf)
+  drawZBufferToWindow(zBuffer)
   waitForAppClose()
