@@ -11,7 +11,7 @@ var
   buf = render_buffer.init[RenderColor](rgb(0, 0, 0), WINDOW_WIDTH, WINDOW_HEIGHT)
   zBuffer = render_buffer.init[float](-999999.0, WINDOW_WIDTH, WINDOW_HEIGHT)
 
-  model = loadObj("models/Tails/Tails.obj")
+  model = loadObj("models/african_head/african_head.obj")
 
 proc applyOffset(v: Point3d, offset: float = 1.0, y = 0): Vec2i =
   let offsetDouble = offset * 2.0
@@ -19,20 +19,29 @@ proc applyOffset(v: Point3d, offset: float = 1.0, y = 0): Vec2i =
   result.y = int((v.y + offset) * WINDOW_HEIGHT / offsetDouble) - y 
 
 proc drawToRenderBuffer() =
+  echo "Render in progress..."
   let
     lightDir = vector3d(0, 0, -1)
+  
+  var
+    facesProcessed = 0
 
   for tri in model.triangles():
     var vs: array[3, Vec2i]
-    vs[0] = applyOffset(tri[0], 5.0, WINDOW_HEIGHT div 2)
-    vs[1] = applyOffset(tri[1], 5.0, WINDOW_HEIGHT div 2)
-    vs[2] = applyOffset(tri[2], 5.0, WINDOW_HEIGHT div 2)
+    vs[0] = applyOffset(tri[0])
+    vs[1] = applyOffset(tri[1])
+    vs[2] = applyOffset(tri[2])
 
     let
       intensity = dot(tri.normal(), lightDir)
     if intensity > 0:
       let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
       buf.triangle(zBuffer, tri, vs, col)
+
+    inc facesProcessed
+    if facesProcessed mod 500 == 0 or facesProcessed == model.facesCount:
+      echo $facesProcessed & "/" & $model.facesCount & " faces processed..."
+  echo "Render finished."
 
 when isMainModule:
   initApp(WINDOW_WIDTH, WINDOW_HEIGHT)

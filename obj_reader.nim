@@ -15,6 +15,7 @@ type
 
   Model* = object
     meshes: Table[string, Mesh]
+    facesCount*: int
 
 proc readFloat(input: string): float =
   if parseFloat(input, result) == 0:
@@ -57,9 +58,14 @@ iterator triangles*(self: Model): Triangle =
       yield tri
 
 proc loadObj*(fileName: string): Model =
+  echo "Loading model from '" & fileName & "'..."
   result.meshes = initTable[string, Mesh]()
+  result.facesCount = 0
 
-  var f: File
+  var
+    f: File
+    vertsCount = 0
+
   if open(f, fileName):
     try:
       var currentMeshName = "~~~scratch~~~"
@@ -84,19 +90,39 @@ proc loadObj*(fileName: string): Model =
           v.y = readFloat(tokens[2])
           v.z = readFloat(tokens[3]) 
           result.meshes[currentMeshName].verts.add(v)
+          inc vertsCount
         
         elif tokens.len >= 4 and command == "f":
           let faceElements = map(tokens[1..tokens.len - 1], extractIndexes)
-          if faceElements.len > 3:
-            raise newException(IOError, "Non-triangle faces not supported")
 
-          var f: Face
-          f[0] = faceElements[0]
-          f[1] = faceElements[1]
-          f[2] = faceElements[2]
+          if faceElements.len < 3:
+            continue
+          elif faceElements.len == 3:
+            var f: Face
+            f[0] = faceElements[0]
+            f[1] = faceElements[1]
+            f[2] = faceElements[2]
 
-          result.meshes[currentMeshName].faces.add(f)
+            result.meshes[currentMeshName].faces.add(f)
+            inc result.facesCount
+          elif faceElements.len == 4:
+            var f: Face
+            f[0] = faceElements[0]
+            f[1] = faceElements[1]
+            f[2] = faceElements[3]
 
+            result.meshes[currentMeshName].faces.add(f)
+            inc result.facesCount
+
+            f[0] = faceElements[1]
+            f[1] = faceElements[2]
+            f[2] = faceElements[3]
+
+            result.meshes[currentMeshName].faces.add(f)
+            inc result.facesCount
+          else:
+            raise newException(IOError, "Faces with more that 4 vertices not supported")
+      
         else:
           discard
           #echo "Tokens: " & $tokens
@@ -108,5 +134,5 @@ proc loadObj*(fileName: string): Model =
       echo "Unknown exception!"
       raise
     finally:
-      #echo "Result model: " & $result
       close f
+      echo "Done. Faces: " & $result.facesCount & " Vertices: " & $vertsCount
