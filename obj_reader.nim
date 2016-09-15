@@ -49,17 +49,18 @@ proc smartSplit(input: string): seq[string] =
     if stripped != "":
       result.add(stripped)
 
-iterator triangles*(self: Model): (array[3, Point3d], array[2, Point2d]) =
+iterator triangles*(self: Model): (array[3, Point3d], array[3, Point2d]) =
   for m in self.meshes.values():
     for f in m.faces:
       var
         tri: array[3, Point3d]
-        uv: array[2, Point2d]
+        uv: array[3, Point2d]
       tri[0] = m.verts[f[0].v]
       tri[1] = m.verts[f[1].v]
       tri[2] = m.verts[f[2].v]
       uv[0] = m.texCoords[f[0].t]
       uv[1] = m.texCoords[f[1].t]
+      uv[2] = m.texCoords[f[2].t]
       
       yield (tri, uv)
 

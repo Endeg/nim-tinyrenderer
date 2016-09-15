@@ -41,7 +41,9 @@ template line*[P](self: var RenderBuffer[P],
 
 template triangle*(self: var RenderBuffer[RenderColor],
                    zBuffer: var RenderBuffer[float],
+                   tex: RenderBuffer[RenderColor],
                    worldCoords: array[3, Point3d],
+                   textureCoords: array[3, Point2d],
                    screenCoords: array[3, Vec2i],
                    col: RenderColor = rgb(255, 255, 255)) =
   let bb = getBbox(vs)
@@ -62,9 +64,21 @@ template triangle*(self: var RenderBuffer[RenderColor],
       z = z + worldCoords[0].z * bcScreen.x
       z = z + worldCoords[1].z * bcScreen.y
       z = z + worldCoords[2].z * bcScreen.z
+
+      let
+        u = bcScreen.x * (textureCoords[0].x + textureCoords[1].x + textureCoords[2].x) / 3.0
+        v = bcScreen.y * (textureCoords[0].y + textureCoords[1].y + textureCoords[2].y) / 3.0
+      
+      #echo "bcScreen: " & $bcScreen.x & "|" & $bcScreen.y & "|" & $bcScreen.z & " uv: " & $u & "|" & $v
+
+      let texCol = tex.get(u, v)
+
       if zBuffer.get(x, y) < z:
         zBuffer.set(x, y, z)
-        self.set(x, y, col)
+        self.set(x, y, texCol)
+        #self.set(x, y, rgb(clamp(texCol.red + col.red, 0, 255),
+        #                   clamp(texCol.green + col.green, 0, 255),
+        #                   clamp(texCol.blue + col.blue, 0, 255)))
 
   when defined(debug):
     self.line([vs[0], vs[1]], rgb(0, 255, 0))

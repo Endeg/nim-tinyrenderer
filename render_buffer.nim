@@ -11,8 +11,8 @@ type
     #TODO: Use seq[x + y * w] instead
     map: Table[RenderBufferKey, P]
     defaultValue: P
-    width: int
-    height: int
+    width*: int
+    height*: int
 
 proc init*[P](defaultValue: P, width: int = 0, height: int = 0): RenderBuffer[P] =
   result.map = initTable[RenderBufferKey, P]()

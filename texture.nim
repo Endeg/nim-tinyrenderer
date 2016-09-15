@@ -17,9 +17,9 @@ proc loadTexture*(fileName: string): RenderBuffer[RenderColor] =
           let p = bitmap[x + y * surf.w]
 
           if surf.format.format == SDL_PIXELFORMAT_RGB24:
-            result.set(x, surf.h - y, rgb(p[2], p[0], p[1]))
+            result.set(x, y, rgb(p[2], p[0], p[1]))
           elif surf.format.format == SDL_PIXELFORMAT_BGR24:
-            result.set(x, surf.h - y, rgb(p[1], p[0], p[2]))
+            result.set(x, y, rgb(p[1], p[0], p[2]))
           else:
             raise newException(SystemError, "Not supported pixel format")
     elif surf.format.BitsPerPixel == 32:
@@ -32,3 +32,9 @@ proc loadTexture*(fileName: string): RenderBuffer[RenderColor] =
   finally:
     surf.unlockSurface()
     surf.destroy()
+
+proc get*(self: RenderBuffer[RenderColor], u, v: float): RenderColor =
+  let
+    x = int(float(self.width) * u)
+    y = int(float(self.height) * u)
+  result = self.get(x, y)
