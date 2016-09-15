@@ -49,14 +49,19 @@ proc smartSplit(input: string): seq[string] =
     if stripped != "":
       result.add(stripped)
 
-iterator triangles*(self: Model): array[3, Point3d] =
+iterator triangles*(self: Model): (array[3, Point3d], array[2, Point2d]) =
   for m in self.meshes.values():
     for f in m.faces:
-      var tri: array[3, Point3d]
+      var
+        tri: array[3, Point3d]
+        uv: array[2, Point2d]
       tri[0] = m.verts[f[0].v]
       tri[1] = m.verts[f[1].v]
       tri[2] = m.verts[f[2].v]
-      yield tri
+      uv[0] = m.texCoords[f[0].t]
+      uv[1] = m.texCoords[f[1].t]
+      
+      yield (tri, uv)
 
 proc loadObj*(fileName: string): Model =
   echo "Loading model from '" & fileName & "'..."

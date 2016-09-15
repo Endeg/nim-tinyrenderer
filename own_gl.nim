@@ -26,7 +26,7 @@ proc drawToRenderBuffer() =
   var
     facesProcessed = 0
 
-  for tri in model.triangles():
+  for tri, uv in model.triangles():
     var vs: array[3, Vec2i]
     vs[0] = applyOffset(tri[0])
     vs[1] = applyOffset(tri[1])
