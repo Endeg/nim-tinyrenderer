@@ -1,4 +1,4 @@
-import basic3d
+import basic2d, basic3d
 
 type
   #TODO: Refactor raster functions to use this type
@@ -7,6 +7,8 @@ type
 
   Bbox* = object
     min*, max*: Vec2i
+
+  VertexShader* = proc (v: Point3d): Point3d
 
 proc vec2*(x: int, y: int): Vec2i =
   result.x = x

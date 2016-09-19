@@ -41,22 +41,31 @@ template line*[P](self: var RenderBuffer[P],
 
 template triangle*(target: var RenderBuffer[RenderColor],
                    zBuffer: var RenderBuffer[float],
-                   tex: RenderBuffer[RenderColor],
+                   texture: RenderBuffer[RenderColor],
+                   vs: VertexShader,
                    worldCoords: array[3, Point3d],
                    textureCoords: array[3, Point2d],
-                   screenCoords: array[3, Vec2i],
                    col: RenderColor = rgb(255, 255, 255)) =
-  let bb = getBbox(vs)
-  var vsf: array[3, Vector2d]
-  for i in screenCoords.low..screenCoords.high:
-    vsf[i].x = float(vs[i].x)
-    vsf[i].y = float(vs[i].y)
+  var
+    transformedCoords: array[3, Point3d]
+    screenCoords: array[3, Vec2i]
+    transformedVectors: array[3, Vector2d]
+  
+  for i in worldCoords.low..worldCoords.high:
+    transformedCoords[i] = vs(worldCoords[i])
+    screenCoords[i].x = int(transformedCoords[i].x)
+    screenCoords[i].y = int(transformedCoords[i].y)
+
+    transformedVectors[i].x = transformedCoords[i].x
+    transformedVectors[i].y = transformedCoords[i].y
+
+  let bb = getBbox(screenCoords)
 
   for x in bb.min.x..bb.max.x:
     for y in bb.min.y..bb.max.y:
       let
         p = vector2d(float(x), float(y))
-        bcScreen = barycentric(vsf, p)
+        bcScreen = barycentric(transformedVectors, p)
       if bcScreen.x < 0.0 or bcScreen.y < 0.0 or bcScreen.z < 0.0:
         continue
       var
@@ -71,7 +80,7 @@ template triangle*(target: var RenderBuffer[RenderColor],
       
       #echo "bcScreen: " & $bcScreen.x & "|" & $bcScreen.y & "|" & $bcScreen.z & " uv: " & $u & "|" & $v
 
-      let texCol = tex.get(u, v)
+      let texCol = texture.get(u, v)
 
       if zBuffer.get(x, y) < z:
         zBuffer.set(x, y, z)

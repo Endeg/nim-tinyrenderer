@@ -1,11 +1,12 @@
 import obj_reader, texture, app
 import render_buffer, color, raster, types, geometry
 
-import algorithm, random, basic3d
+import algorithm, random, basic2d, basic3d
 
 const
   WINDOW_WIDTH = 900
   WINDOW_HEIGHT = 900
+  OFFSET = 1.0
 
 var
   buf = render_buffer.init[RenderColor](rgb(0, 0, 0), WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -14,10 +15,11 @@ var
   model = loadObj("models/african_head/african_head.obj")
   tex = loadTexture("models/african_head/african_head_diffuse.tga")
 
-proc applyOffset(v: Point3d, offset: float = 1.0, y = 0): Vec2i =
-  let offsetDouble = offset * 2.0
-  result.x = int((v.x + offset) * WINDOW_WIDTH / offsetDouble)
-  result.y = int((v.y + offset) * WINDOW_HEIGHT / offsetDouble) - y 
+proc orthoishWithOffset(v: Point3d): Point3d =
+  let offsetDouble = OFFSET * 2.0
+  result.x = (v.x + OFFSET) * WINDOW_WIDTH / offsetDouble
+  result.y = (v.y + OFFSET) * WINDOW_HEIGHT / offsetDouble
+  result.z = v.z
 
 proc drawToRenderBuffer() =
   echo "Render in progress..."
@@ -28,16 +30,11 @@ proc drawToRenderBuffer() =
     facesProcessed = 0
 
   for tri, uv in model.triangles():
-    var vs: array[3, Vec2i]
-    vs[0] = applyOffset(tri[0])
-    vs[1] = applyOffset(tri[1])
-    vs[2] = applyOffset(tri[2])
-
     let
       intensity = dot(tri.normal(), lightDir)
     if intensity > 0:
       let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
-      triangle(buf, zBuffer, tex, tri, uv, vs, col)
+      triangle(buf, zBuffer, tex, orthoishWithOffset, tri, uv, col)
 
     inc facesProcessed
     if facesProcessed mod 500 == 0 or facesProcessed == model.facesCount:
