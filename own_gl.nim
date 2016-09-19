@@ -37,7 +37,7 @@ proc drawToRenderBuffer() =
       intensity = dot(tri.normal(), lightDir)
     if intensity > 0:
       let col = rgb(byte(intensity * 255), byte(intensity * 255), byte(intensity * 255))
-      buf.triangle(zBuffer, tex, tri, uv, vs, col)
+      triangle(buf, zBuffer, tex, tri, uv, vs, col)
 
     inc facesProcessed
     if facesProcessed mod 500 == 0 or facesProcessed == model.facesCount:

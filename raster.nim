@@ -39,7 +39,7 @@ template line*[P](self: var RenderBuffer[P],
                   col: P) =
   self.line(int(x0), int(y0), int(x1), int(y1), col)
 
-template triangle*(self: var RenderBuffer[RenderColor],
+template triangle*(target: var RenderBuffer[RenderColor],
                    zBuffer: var RenderBuffer[float],
                    tex: RenderBuffer[RenderColor],
                    worldCoords: array[3, Point3d],
@@ -75,12 +75,13 @@ template triangle*(self: var RenderBuffer[RenderColor],
 
       if zBuffer.get(x, y) < z:
         zBuffer.set(x, y, z)
-        self.set(x, y, texCol)
-        #self.set(x, y, rgb(clamp(texCol.red + col.red, 0, 255),
+        target.set(x, y, col)
+        #target.set(x, y, texCol)
+        #target.set(x, y, rgb(clamp(texCol.red + col.red, 0, 255),
         #                   clamp(texCol.green + col.green, 0, 255),
         #                   clamp(texCol.blue + col.blue, 0, 255)))
 
   when defined(debug):
-    self.line([vs[0], vs[1]], rgb(0, 255, 0))
-    self.line([vs[1], vs[2]], rgb(0, 255, 0))
-    self.line([vs[2], vs[0]], rgb(255, 0, 0))
+    target.line([vs[0], vs[1]], rgb(0, 255, 0))
+    target.line([vs[1], vs[2]], rgb(0, 255, 0))
+    target.line([vs[2], vs[0]], rgb(255, 0, 0))
